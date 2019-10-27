@@ -13,7 +13,7 @@ def compute_r2(w, e, x_points, y_points): # подсчет R2
     y_mean = np.mean(y_points)
     ss_res += y_mean - (np.dot(w, np.transpose(x_points)) + e)
     ss_tot += (y_points - y_mean)
-    return 1 - (float(np.dot(ss_res, np.transpose(ss_res)))/float(np.dot(ss_tot, np.transpose(ss_tot))))
+    return float(np.dot(ss_res, np.transpose(ss_res)))/float(np.dot(ss_tot, np.transpose(ss_tot)))
 
 
 def compute_mse(w, e, x_points, y_points):  # подсчет LOSS

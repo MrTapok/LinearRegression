@@ -30,9 +30,10 @@ def run():
     # начальные данные
     number_of_folds = 5
     learning_rate = 0.0001
+    batch_size = 2500
     initial_w = np.zeros(len(x[0]))
     initial_e = 0
-    amount_of_iterations = 10
+    amount_of_iterations = 1000
 
     for i in range(0, number_of_folds):
         x_list.append(x[len(x) * i // number_of_folds : len(x) * (i+1) // number_of_folds, :])
@@ -57,10 +58,10 @@ def run():
         x_train = normalize_data_st(x_train, x_means, x_sds)
         x_test = normalize_data_st(x_test, x_means, x_sds)
 
-        [w, e] = gradient_descent_runner(x_train, y_train, initial_w, initial_e, learning_rate, amount_of_iterations)
+        [w, e] = gradient_descent_runner(x_train, y_train, initial_w, initial_e, learning_rate, amount_of_iterations, batch_size)
         log_data(w, e, compute_rmse(w, e, x_train, y_train), compute_r2(w, e, x_train, y_train),
                  compute_rmse(w, e, x_test, y_test), compute_r2(w, e, x_test, y_test), compute_mse(w, e, x_train, y_train), compute_mse(w, e, x_test, y_test),
-                 i+1, learning_rate, amount_of_iterations, 'output.txt')
+                 i+1, learning_rate, 'output.txt', batch_size)
 
 
 if __name__ == '__main__':

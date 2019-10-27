@@ -49,10 +49,10 @@ def normalize_data_st(data, x_means, x_sds):  # нормализация
     return new_data
 
 
-def log_data(w, e, train_rmse, train_r2, test_rmse, test_r2, train_loss, test_loss, fold_number, learning_rate, number_of_iterations, file_name):  # вывод в файл
+def log_data(w, e, train_rmse, train_r2, test_rmse, test_r2, train_loss, test_loss, fold_number, learning_rate, file_name, batch_size):  # вывод в файл
     data_file = open(file_name, 'a')
-    data_file.write("Number of iterations = " + str(number_of_iterations) + "\n")
     data_file.write("Learning rate = " + str(learning_rate) + "\n")
+    data_file.write("Batch size = " + str(batch_size) + "\n")
     data_file.write("Model coefficients: " + str(w) + "\n")
     data_file.write("Model bias: " + str(e) + "\n")
     data_file.write("Metrics on " + str(fold_number) + " fold\n")
