@@ -1,5 +1,4 @@
 import numpy as np
-from data_work import shuffler
 from metrics import compute_mse
 
 
