@@ -29,7 +29,7 @@ def run():
 
     # начальные данные
     number_of_folds = 5
-    learning_rate = 0.0001
+    learning_rate = 0.00001
     batch_size = 2500
     initial_w = np.zeros(len(x[0]))
     initial_e = 0
