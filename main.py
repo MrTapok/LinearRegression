@@ -5,10 +5,9 @@ from metrics import compute_mse
 from gradient_descent import gradient_descent_runner
 from data_work import normalize_data_st
 from data_work import log_data
-from data_work import shuffler
+from data_work import  log_local_data
+from random import shuffle
 from data_work import get_means_and_sds
-from data_work import normalize_data_sklearn_mm
-from data_work import normalize_data_sklearn_st
 
 
 def run():
@@ -19,7 +18,7 @@ def run():
             cols.append(i)
     data = np.genfromtxt("Features_Variant_1.csv", delimiter=",", usecols=cols)  # читка данных, константный столбец можно было из самой csv-шки удалить, но я решил не трогать
 
-    data = shuffler(data)  # перемешиваем данные
+    shuffle(data)  # перемешиваем данные
     x = data[:, 0:len(data[0]) - 1]  # забираем данные без целевой переменной
     y = data[:, len(data[0]) - 1]  # целевая переменная
 
@@ -29,11 +28,15 @@ def run():
 
     # начальные данные
     number_of_folds = 5
-    learning_rate = 0.00001
+    learning_rate = 0.0001
     batch_size = 2500
     initial_w = np.zeros(len(x[0]))
     initial_e = 0
     amount_of_iterations = 1000
+    train_rmse = []
+    test_rmse = []
+    train_r2 = []
+    test_r2 = []
 
     for i in range(0, number_of_folds):
         x_list.append(x[len(x) * i // number_of_folds : len(x) * (i+1) // number_of_folds, :])
@@ -45,7 +48,7 @@ def run():
             x_train = np.copy(x_list[0])
             y_train = np.copy(y_list[0])
         else:
-            x_train = -np.copy(x_list[1])
+            x_train = np.copy(x_list[1])
             y_train = np.copy(y_list[1])
             costil = 1
         x_test = np.copy(x_list[i])
@@ -59,9 +62,14 @@ def run():
         x_test = normalize_data_st(x_test, x_means, x_sds)
 
         [w, e] = gradient_descent_runner(x_train, y_train, initial_w, initial_e, learning_rate, amount_of_iterations, batch_size)
-        log_data(w, e, compute_rmse(w, e, x_train, y_train), compute_r2(w, e, x_train, y_train),
-                 compute_rmse(w, e, x_test, y_test), compute_r2(w, e, x_test, y_test), compute_mse(w, e, x_train, y_train), compute_mse(w, e, x_test, y_test),
-                 i+1, learning_rate, 'output.txt', batch_size)
+        train_rmse.append(compute_rmse(w, e, x_train, y_train))
+        test_rmse.append(compute_rmse(w, e, x_test, y_test))
+        train_r2.append(compute_r2(w, e, x_train, y_train))
+        test_r2.append(compute_r2(w, e, x_test, y_test))
+
+        log_local_data(w, e, compute_mse(w, e, x_train, y_train), compute_mse(w, e, x_test, y_test), i+1, "output.txt")
+
+    log_data(train_rmse, test_rmse, train_r2, test_r2, learning_rate, batch_size, "output.txt")
 
 
 if __name__ == '__main__':
